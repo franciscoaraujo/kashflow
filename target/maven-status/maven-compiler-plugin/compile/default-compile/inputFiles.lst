@@ -1,0 +1,10 @@
+C:\Users\chico\IdeaProjects\kashflow\src\main\java\br\com\bitewisebytes\api\v1\controller\KashFlowController.java
+C:\Users\chico\IdeaProjects\kashflow\src\main\java\br\com\bitewisebytes\KashflowApplication.java
+C:\Users\chico\IdeaProjects\kashflow\src\main\java\br\com\bitewisebytes\model\entity\Transaction.java
+C:\Users\chico\IdeaProjects\kashflow\src\main\java\br\com\bitewisebytes\model\entity\Wallet.java
+C:\Users\chico\IdeaProjects\kashflow\src\main\java\br\com\bitewisebytes\model\enums\TransactionType.java
+C:\Users\chico\IdeaProjects\kashflow\src\main\java\br\com\bitewisebytes\model\repository\TransactionRepository.java
+C:\Users\chico\IdeaProjects\kashflow\src\main\java\br\com\bitewisebytes\model\repository\WalletRepository.java
+C:\Users\chico\IdeaProjects\kashflow\src\main\java\br\com\bitewisebytes\model\requestDto\WalletRequestDto.java
+C:\Users\chico\IdeaProjects\kashflow\src\main\java\br\com\bitewisebytes\model\responseDto\WalletResponseDto.java
+C:\Users\chico\IdeaProjects\kashflow\src\main\java\br\com\bitewisebytes\service\WalletService.java

@@ -1,0 +1,18 @@
+  #application.yml
+  spring:
+    datasource:
+      url: jdbc:postgresql://localhost:5432/walletdb
+      username: walletuser
+      password: walletpass
+    jpa:
+      hibernate:
+        ddl-auto: update
+      show-sql: false
+    kafka:
+      bootstrap-servers: localhost:9092
+  vaadin:
+    launch-browser: true
+    production-mode: false
+  logging:
+    level:
+      org.springframework.web.server.DispatcherServlet: DEBUG
