@@ -16,3 +16,18 @@
   logging:
     level:
       org.springframework.web.server.DispatcherServlet: DEBUG
+
+  resilience4j:
+    retry:
+      instances:
+        kafkaProducerRetry:
+          max-attempts: 3
+          wait-duration: 2s
+
+    circuitbreaker:
+      instances:
+        kafkaCircuitBreaker:
+          sliding-window-type: count
+          sliding-window-size: 5
+          failure-rate-threshold: 50
+          wait-duration-in-open-state: 10s

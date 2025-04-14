@@ -1,9 +1,7 @@
 package br.com.bitewisebytes.api.v1.controller;
 
-import br.com.bitewisebytes.model.requestDto.WalletDepositDto;
-import br.com.bitewisebytes.model.requestDto.WalletRequestDto;
-import br.com.bitewisebytes.model.requestDto.WalletTransferDto;
-import br.com.bitewisebytes.model.requestDto.WalletWithdrawDto;
+import br.com.bitewisebytes.model.requestDto.*;
+import br.com.bitewisebytes.model.responseDto.TransactionDetailDto;
 import br.com.bitewisebytes.model.responseDto.TransactionReponseDto;
 import br.com.bitewisebytes.model.responseDto.WalletResponseDto;
 import br.com.bitewisebytes.model.validation.WalletRequestValidator;
@@ -48,24 +46,32 @@ public class KashFlowController {
     }
 
     @GetMapping("/balance/{documentoNumber}")
-    public ResponseEntity<WalletResponseDto>  getBalance(@PathVariable String documentoNumber) {
-        return ResponseEntity.ok().body(walletService.getBalance(documentoNumber));
+    public ResponseEntity<WalletResponseDto>  getBalance(@PathVariable String documentoNumber,
+                                                         @RequestParam(defaultValue = "0") int page,
+                                                         @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok().body(walletService.getBalance(documentoNumber,page, size));
     }
 
-    @GetMapping("/balance/detailHistory/documentNumber/{documentNumber}/dateTransaction/{dateTransaction}")
-    public ResponseEntity<List<TransactionReponseDto>> getHistoricalBalance(@PathVariable String documentNumber, @PathVariable String dateTransaction) {
-        return ResponseEntity.ok().body(walletService.getHistoricalBalance(documentNumber, (dateTransaction)));
+    @GetMapping("/balance/resumeTransaction/documentNumber/{documentNumber}/dateTransaction/{dateTransaction}")
+    public ResponseEntity<List<TransactionReponseDto>> getHistoricalBalanceGeneral(
+            @PathVariable String documentNumber,
+            @PathVariable String dateTransaction,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok().body(walletService.getHistoricalBalance(documentNumber, dateTransaction, page, size));
     }
 
     @PostMapping("/withdraw")
-    public void withdraw(@RequestBody WalletWithdrawDto withdrawDto) {
+    public ResponseEntity<String> withdraw(@RequestBody WalletWithdrawDto withdrawDto) {
         walletService.withdraw(withdrawDto);
+        return ResponseEntity.ok("Withdraw successful");
     }
 
 
     @PostMapping("/transfer")
-    public void transfer(@RequestBody WalletTransferDto walletTransferDto) {
+    public ResponseEntity<String> transfer(@RequestBody WalletTransferDto walletTransferDto) {
         walletService.transfer(walletTransferDto);
+        return ResponseEntity.ok("Transfer successful");
     }
 
 }
