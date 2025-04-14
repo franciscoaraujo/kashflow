@@ -33,20 +33,20 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://wallet_kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
-  wallet-service:
-    build: .
-    container_name: wallet_app
-    depends_on:
-      - postgres
-      - kafka
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/wallet_db
-      SPRING_DATASOURCE_USERNAME: wallet_user
-      SPRING_DATASOURCE_PASSWORD: wallet_pass
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: wallet_kafka:9092
-    restart: on-failure
+  #wallet-service:
+  #  build: .
+  #  container_name: wallet_app
+  #  depends_on:
+  #    - postgres
+  #    - kafka
+  #  ports:
+  #    - "8080:8080"
+  #  environment:
+  #    SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/wallet_db
+  #    SPRING_DATASOURCE_USERNAME: wallet_user
+  #    SPRING_DATASOURCE_PASSWORD: wallet_pass
+  #    SPRING_KAFKA_BOOTSTRAP_SERVERS: wallet_kafka:9092
+  #  restart: on-failure
 
 volumes:
   postgres_data:

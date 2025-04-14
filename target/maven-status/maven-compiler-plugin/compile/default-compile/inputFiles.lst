@@ -1,4 +1,6 @@
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\api\v1\controller\KashFlowController.java
+C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\api\v1\openapi\SwaggerUiWebFluxConfigurer.java
+C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\api\v1\openapi\SwaggerUiWebMvcConfigurer.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\KashflowApplication.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\model\entity\Transaction.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\model\entity\Wallet.java
@@ -18,4 +20,5 @@ C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\model
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\model\responseDto\TransactionReponseDto.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\model\responseDto\WalletResponseDto.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\model\validation\WalletRequestValidator.java
+C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\service\TransactionService.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\service\WalletService.java

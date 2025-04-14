@@ -29,15 +29,13 @@ import java.util.UUID;
 @Service
 public class WalletService {
 
+    private final TransactionService transactionService;
     private final WalletRepository walletRepository;
-    private final TransactionRepository transactionRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    public WalletService(WalletRepository walletRepository,
-                         TransactionRepository transactionRepository,
-                         KafkaTemplate<String, String> kafkaTemplate) {
+    public WalletService(TransactionService transactionService, WalletRepository walletRepository, KafkaTemplate<String, String> kafkaTemplate) {
+        this.transactionService = transactionService;
         this.walletRepository = walletRepository;
-        this.transactionRepository = transactionRepository;
         this.kafkaTemplate = kafkaTemplate;
     }
 
@@ -54,7 +52,7 @@ public class WalletService {
         Wallet walletSeved = walletRepository.save(wallet);
         WalletResponseDto walletResponseDto = WalletResponseDto.toDto(walletSeved);
 
-        createTransaction(wallet, wallet.getBalance(), TransactionType.DEPOSIT, wallet.getId(), null);
+        transactionService.createTransaction(wallet, wallet.getBalance(), TransactionType.DEPOSIT, wallet.getId(), null);
 
         log.info("Wallet created successfully: {}", walletResponseDto);
 
@@ -73,7 +71,7 @@ public class WalletService {
             }
             wallet.setBalance(wallet.getBalance().add(amount));
 
-            createTransaction(wallet, amount, TransactionType.DEPOSIT, wallet.getId(), null);
+            transactionService.createTransaction(wallet, amount, TransactionType.DEPOSIT, wallet.getId(), null);
 
             walletRepository.save(wallet);
             log.info("Deposit successful: {}", walletDepositDto);
@@ -98,7 +96,7 @@ public class WalletService {
         wallet.setBalance(wallet.getBalance().subtract(withdrawDto.amount()));
         walletRepository.save(wallet);
 
-        createTransaction(wallet, withdrawDto.amount(), TransactionType.WITHDRAW, wallet.getId(), null);
+        transactionService.createTransaction(wallet, withdrawDto.amount(), TransactionType.WITHDRAW, wallet.getId(), null);
 
         log.info("Withdraw successful: {}", withdrawDto);
 
@@ -126,58 +124,11 @@ public class WalletService {
         walletRepository.save(fromWallet);
         walletRepository.save(toWallet);
 
-        createTransaction(fromWallet, walletTransferDto.amount(), TransactionType.TRANSFER_OUT, fromWallet.getId(), toWallet.getId());
-        createTransaction(toWallet, walletTransferDto.amount(), TransactionType.TRANSFER_IN, fromWallet.getId(), toWallet.getId());
+        transactionService.createTransaction(fromWallet, walletTransferDto.amount(), TransactionType.TRANSFER_OUT, fromWallet.getId(), toWallet.getId());
+        transactionService.createTransaction(toWallet, walletTransferDto.amount(), TransactionType.TRANSFER_IN, fromWallet.getId(), toWallet.getId());
 
         log.info("Transfer successful: {}", walletTransferDto);
     }
 
-    public WalletResponseDto getBalance(String documentoNumber, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        val wallet = walletRepository.findByDocumentNumber(documentoNumber).orElse(null);
-        if (wallet == null) {
-            throw new WalletException("Wallet not found", "WALLET_NOT_FOUND");
-        }
-        return WalletResponseDto.toDto(wallet);
-    }
-
-    public List<TransactionReponseDto> getHistoricalBalance(String documentNumber, String dateTransaction, int page, int size) {
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate parsedDate = LocalDate.parse(dateTransaction, formatter);
-        Pageable pageable = PageRequest.of(page, size);
-
-        List<Transaction> transactions = transactionRepository
-                .findByDocumentNumberAndDateTransactionOrderByDateTransactionDesc(documentNumber, parsedDate, pageable);
-
-        transactions.stream()
-                .map(tx -> tx.getType() == TransactionType.WITHDRAW || tx.getType() == TransactionType.TRANSFER_OUT
-                        ? tx.getAmount().negate() : tx.getAmount())
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        return TransactionListResponseDto.toDto(transactions);
-    }
-
-    private void createTransaction(Wallet wallet, BigDecimal amount, TransactionType type, Long walletFromId, Long walletToId) {
-        log.info("Create transaction: {}", type);
-
-        if ((type == TransactionType.TRANSFER_OUT || type == TransactionType.TRANSFER_IN) && (walletFromId == null || walletToId == null)) {
-            throw new WalletException("Invalid transaction: Missing wallet IDs for transfer", "INVALID_TRANSACTION");
-        }
-
-        Transaction transaction = new Transaction();
-        transaction.setTransactionId(UUID.randomUUID());
-        transaction.setWallet(wallet);
-        transaction.setAmount(amount);
-        transaction.setType(type);
-
-        if (type != TransactionType.DEPOSIT) {
-            transaction.setWalletFromId(walletFromId);
-            transaction.setWalletToId(walletToId);
-        }
-
-        transactionRepository.save(transaction);
-        log.info("Transaction created successfully: {}", transaction);
-    }
 
 }

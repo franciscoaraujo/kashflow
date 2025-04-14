@@ -5,6 +5,7 @@ import br.com.bitewisebytes.model.responseDto.TransactionDetailDto;
 import br.com.bitewisebytes.model.responseDto.TransactionReponseDto;
 import br.com.bitewisebytes.model.responseDto.WalletResponseDto;
 import br.com.bitewisebytes.model.validation.WalletRequestValidator;
+import br.com.bitewisebytes.service.TransactionService;
 import br.com.bitewisebytes.service.WalletService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +20,11 @@ public class KashFlowController {
 
 
     private final WalletService walletService;
+    private final TransactionService transactionService;
 
-    public KashFlowController(WalletService walletService) {
+    public KashFlowController(WalletService walletService, TransactionService transactionService) {
         this.walletService = walletService;
+        this.transactionService = transactionService;
     }
 
     @GetMapping("/check")
@@ -49,7 +52,7 @@ public class KashFlowController {
     public ResponseEntity<WalletResponseDto>  getBalance(@PathVariable String documentoNumber,
                                                          @RequestParam(defaultValue = "0") int page,
                                                          @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok().body(walletService.getBalance(documentoNumber,page, size));
+        return ResponseEntity.ok().body(transactionService.getTransactionBalance(documentoNumber,page, size));
     }
 
     @GetMapping("/balance/resumeTransaction/documentNumber/{documentNumber}/dateTransaction/{dateTransaction}")
@@ -58,7 +61,7 @@ public class KashFlowController {
             @PathVariable String dateTransaction,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok().body(walletService.getHistoricalBalance(documentNumber, dateTransaction, page, size));
+        return ResponseEntity.ok().body(transactionService.getHistoricalTransactionBalance(documentNumber, dateTransaction, page, size));
     }
 
     @PostMapping("/withdraw")
@@ -66,7 +69,6 @@ public class KashFlowController {
         walletService.withdraw(withdrawDto);
         return ResponseEntity.ok("Withdraw successful");
     }
-
 
     @PostMapping("/transfer")
     public ResponseEntity<String> transfer(@RequestBody WalletTransferDto walletTransferDto) {

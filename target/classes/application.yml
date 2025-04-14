@@ -31,3 +31,9 @@
           sliding-window-size: 5
           failure-rate-threshold: 50
           wait-duration-in-open-state: 10s
+
+  springdoc:
+    swagger-ui:
+      path=/swagger-ui:
+        html:
+
