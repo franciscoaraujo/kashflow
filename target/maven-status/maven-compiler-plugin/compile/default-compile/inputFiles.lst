@@ -11,12 +11,10 @@ C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\audit
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\model\requestDto\WalletTransferDto.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\model\requestDto\WalletWithdrawDto.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\api\v1\controller\AuditController.java
-C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\audit\service\KafkaProducerService.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\audit\service\AuditKafkaListener.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\service\WalletService.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\model\responseDto\TransactionReponseDto.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\audit\config\KafkaAuditConsumerConfig.java
-C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\audit\KafkaDLTListener.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\audit\repository\AuditTransactionRepository.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\model\requestDto\WalletDepositDto.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\model\responseDto\TransactionDetailDto.java
@@ -27,7 +25,6 @@ C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\model
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\model\responseDto\TransactionListResponseDto.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\KashflowApplication.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\model\exceptions\GlobalExceptionHandler.java
-C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\audit\service\KafkaConsumerService.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\model\enums\TransactionType.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\api\v1\controller\KashFlowController.java
 C:\Users\chico\Github\projects\kashflow\src\main\java\br\com\bitewisebytes\model\validation\WalletRequestValidator.java

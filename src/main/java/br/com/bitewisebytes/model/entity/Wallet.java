@@ -30,6 +30,13 @@ public class Wallet {
 
     private BigDecimal balance = BigDecimal.ZERO;
 
+
+    public Wallet(String documentNumber,  String userName, BigDecimal balance) {
+        this.documentNumber = documentNumber;
+        this.userName = userName;
+        this.balance = balance;
+    }
+
     public Wallet(Long id, String documentNumber, List<Transaction> transactions, String userName, BigDecimal balance) {
         this.id = id;
         this.documentNumber = documentNumber;

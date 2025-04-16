@@ -4,13 +4,11 @@ import java.math.BigDecimal;
 
 public record WalletDepositDto(
         String documentNumber,
-        BigDecimal amount,
-        Long fromWalletId,
-        Long toWalletId
+        BigDecimal amount
+
 ) {
 
-    public static WalletDepositDto toDto(String documentNumber, BigDecimal amount,
-                                         Long fromWalletId, Long toWalletId)  {
-        return new WalletDepositDto(documentNumber, amount, fromWalletId, toWalletId);
+    public static WalletDepositDto toDto(String documentNumber, BigDecimal amount)  {
+        return new WalletDepositDto(documentNumber, amount);
     }
 }
