@@ -41,7 +41,6 @@ public class WalletService {
     @Transactional
     public WalletResponseDto createWallet(WalletRequestDto walletRequestDto) {
         WalletResponseDto walletResponseDto = null;
-        Wallet wallet = null;
         try{
 
             Wallet walletOptional = walletRepository
@@ -51,7 +50,7 @@ public class WalletService {
             if (walletOptional != null) {
                 throw new WalletException("Wallet already exists for userId: " + walletRequestDto.documentNumber(), "WALLET_EXISTS");
             }
-            wallet = WalletRequestDto.toEntity(walletRequestDto);
+            Wallet  wallet = WalletRequestDto.toEntity(walletRequestDto);
             Wallet walletSeved = walletRepository.save(wallet);
             walletResponseDto = WalletResponseDto.toDto(walletSeved);
 
@@ -60,8 +59,7 @@ public class WalletService {
             log.info("Wallet created successfully: {}", walletResponseDto);
 
         }catch (Exception e){
-            auditService.logAudit(wallet.getId(), TransactionType.DEPOSIT, walletRequestDto.balance(), TransactionStatus.FAILED, null, null);
-            auditService.sendAuditFallback( wallet.getId(), TransactionType.DEPOSIT, walletRequestDto.balance(), TransactionStatus.SUCCESS, null, null, new WalletException(" "," "));
+            auditService.logAudit(-1L, TransactionType.DEPOSIT, walletRequestDto.balance(), TransactionStatus.FAILED, null, null);
             throw e;
         }
         return walletResponseDto;
@@ -69,8 +67,9 @@ public class WalletService {
 
     @Transactional
     public void deposit(WalletDepositDto walletDepositDto) {
+        Wallet wallet = null;
         try {
-            Wallet wallet = walletRepository.findByDocumentNumber(walletDepositDto.documentNumber())
+            wallet = walletRepository.findByDocumentNumber(walletDepositDto.documentNumber())
                     .orElseThrow(() -> new WalletException("Wallet not found", "WALLET_NOT_FOUND"));
 
             BigDecimal amount = walletDepositDto.amount();
@@ -88,7 +87,7 @@ public class WalletService {
         } catch (OptimisticLockException e) {
 
             log.error("Optimistic locking failure: {}", e.getMessage());
-            auditService.logAudit(walletDepositDto.fromWalletId(), TransactionType.DEPOSIT, walletDepositDto.amount(), TransactionStatus.FAILED, null, null);
+            auditService.logAudit(wallet.getId(), TransactionType.DEPOSIT, walletDepositDto.amount(), TransactionStatus.FAILED, null, null);
             throw new WalletException("Concurrent update detected. Please retry.", "CONCURRENT_UPDATE");
         }
     }

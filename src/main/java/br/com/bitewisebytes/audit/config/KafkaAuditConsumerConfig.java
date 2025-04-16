@@ -22,8 +22,8 @@ import java.util.Map;
 @Configuration
 public class KafkaAuditConsumerConfig {
 
-    private static final String BOOTSTRAP_SERVERS = "wallet_kafka:9092";
-    //private static final String BOOTSTRAP_SERVERS = "localhost:9093";
+    //private static final String BOOTSTRAP_SERVERS = "wallet_kafka:9092";
+    private static final String BOOTSTRAP_SERVERS = "localhost:9093";
     private static final String GROUP_ID = "wallet-consumer-group";
 
     @Bean
