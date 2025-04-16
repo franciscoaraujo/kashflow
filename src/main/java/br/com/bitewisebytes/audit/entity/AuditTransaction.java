@@ -1,30 +1,47 @@
-package br.com.bitewisebytes.audit;
+package br.com.bitewisebytes.audit.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class AuditTransactionDto {
+@Entity
+@Table(name = "audit_transaction")
+public class AuditTransaction {
+
+    @Id
     private String transactionId;
     private Long walletId;
     private String type;
     private BigDecimal amount;
     private String status;
     private LocalDateTime timestamp;
-    private Long fromWalletFrom;
-    private Long toWalletFrom;
+    private Long walletIdTo;
+    private Long walletIdFrom;
 
-    public AuditTransactionDto() {
+    public AuditTransaction() {
     }
 
-    public AuditTransactionDto(String transactionId, Long walletId, String type, BigDecimal amount, String status, LocalDateTime timestamp, Long fromWalletFrom, Long toWalletFrom) {
+    public AuditTransaction(
+            String transactionId,
+            Long walletId,
+            String type,
+            BigDecimal amount,
+            String status,
+            LocalDateTime timestamp,
+            Long walletIdTo,
+            Long walletIdFrom
+    ) {
         this.transactionId = transactionId;
         this.walletId = walletId;
         this.type = type;
         this.amount = amount;
         this.status = status;
         this.timestamp = timestamp;
-        this.fromWalletFrom = fromWalletFrom;
-        this.toWalletFrom = toWalletFrom;
+        this.walletIdTo = walletIdTo;
+        this.walletIdFrom = walletIdFrom;
     }
 
     public String getTransactionId() {
@@ -75,19 +92,20 @@ public class AuditTransactionDto {
         this.timestamp = timestamp;
     }
 
-    public Long getFromWalletFrom() {
-        return fromWalletFrom;
+    public Long getWalletIdTo() {
+        return walletIdTo;
     }
 
-    public void setFromWalletFrom(Long fromWalletFrom) {
-        this.fromWalletFrom = fromWalletFrom;
+    public void setWalletIdTo(Long walletIdTo) {
+        this.walletIdTo = walletIdTo;
     }
 
-    public Long getToWalletFrom() {
-        return toWalletFrom;
+    public Long getWalletIdFrom() {
+        return walletIdFrom;
     }
 
-    public void setToWalletFrom(Long toWalletFrom) {
-        this.toWalletFrom = toWalletFrom;
+    public void setWalletIdFrom(Long walletIdFrom) {
+        this.walletIdFrom = walletIdFrom;
     }
 }
+

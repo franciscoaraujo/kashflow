@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/wallet_db
+    url: jdbc:postgresql://wallet_postgres:5432/wallet_db
     username: wallet_user
     password: wallet_pass
   jpa:
@@ -19,16 +19,30 @@ spring:
         ack-mode: manual
 
 resilience4j:
-  retry:
-    instances:
-      kafkaProducerRetry:
-        max-attempts: 3
-        wait-duration: 2s
-
   circuitbreaker:
     instances:
       kafkaCircuitBreaker:
-        sliding-window-type: count
-        sliding-window-size: 5
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
         failure-rate-threshold: 50
         wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 3
+        register-health-indicator: true
+        automatic-transition-from-open-to-half-open-enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  health:
+    kafka:
+      enabled: true
+  logging:
+    level:
+      org:
+        apache:
+          kafka: DEBUG
+        springframework:
+          kafka: DEBUG

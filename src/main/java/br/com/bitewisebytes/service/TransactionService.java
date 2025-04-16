@@ -9,6 +9,7 @@ import br.com.bitewisebytes.model.repository.WalletRepository;
 import br.com.bitewisebytes.model.responseDto.TransactionListResponseDto;
 import br.com.bitewisebytes.model.responseDto.TransactionReponseDto;
 import br.com.bitewisebytes.model.responseDto.WalletResponseDto;
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.springframework.data.domain.PageRequest;
@@ -50,6 +51,7 @@ public class TransactionService {
         return TransactionListResponseDto.toDto(transactions);
     }
 
+    @Transactional
     public void createTransaction(Wallet wallet, BigDecimal amount, TransactionType type, Long walletFromId, Long walletToId) {
         log.info("Create transaction: {}", type);
 
@@ -67,7 +69,6 @@ public class TransactionService {
             transaction.setWalletFromId(walletFromId);
             transaction.setWalletToId(walletToId);
         }
-
         transactionRepository.save(transaction);
         log.info("Transaction created successfully: {}", transaction);
     }

@@ -1,38 +1,35 @@
-package br.com.bitewisebytes.audit;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+package br.com.bitewisebytes.audit.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "audit_transaction")
-public class AuditTransaction {
+public class WalletTransactionEventDto {
 
-    @Id
     private String transactionId;
     private Long walletId;
-    private String type;
+    private String type; // DEPOSIT, WITHDRAW, TRANSFER
     private BigDecimal amount;
     private String status;
     private LocalDateTime timestamp;
-    private Long walletIdTo;
-    private Long walletIdFrom;
 
-    public AuditTransaction() {
+    public WalletTransactionEventDto() {
     }
 
-    public AuditTransaction(String transactionId, Long walletId, String type, BigDecimal amount, String status, LocalDateTime timestamp, Long walletIdTo, Long walletIdFrom) {
+    public WalletTransactionEventDto(
+            String transactionId,
+            Long walletId,
+            String type,
+            BigDecimal amount,
+            String status,
+            LocalDateTime timestamp
+    ) {
+
         this.transactionId = transactionId;
         this.walletId = walletId;
         this.type = type;
         this.amount = amount;
         this.status = status;
         this.timestamp = timestamp;
-        this.walletIdTo = walletIdTo;
-        this.walletIdFrom = walletIdFrom;
     }
 
     public String getTransactionId() {
@@ -83,20 +80,4 @@ public class AuditTransaction {
         this.timestamp = timestamp;
     }
 
-    public Long getWalletIdTo() {
-        return walletIdTo;
-    }
-
-    public void setWalletIdTo(Long walletIdTo) {
-        this.walletIdTo = walletIdTo;
-    }
-
-    public Long getWalletIdFrom() {
-        return walletIdFrom;
-    }
-
-    public void setWalletIdFrom(Long walletIdFrom) {
-        this.walletIdFrom = walletIdFrom;
-    }
 }
-

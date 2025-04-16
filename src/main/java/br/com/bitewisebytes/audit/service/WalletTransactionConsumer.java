@@ -1,5 +1,8 @@
-package br.com.bitewisebytes.audit;
+package br.com.bitewisebytes.audit.service;
 
+import br.com.bitewisebytes.audit.dto.WalletTransactionEventDto;
+import br.com.bitewisebytes.audit.entity.AuditTransaction;
+import br.com.bitewisebytes.audit.repository.AuditTransactionRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

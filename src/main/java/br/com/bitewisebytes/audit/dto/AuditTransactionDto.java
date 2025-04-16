@@ -1,37 +1,34 @@
-package br.com.bitewisebytes.audit;
+package br.com.bitewisebytes.audit.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class WalletTransactionEventDto {
-
+public class AuditTransactionDto {
     private String transactionId;
     private Long walletId;
-    private String type; // DEPOSIT, WITHDRAW, TRANSFER
+    private String type;
     private BigDecimal amount;
     private String status;
     private LocalDateTime timestamp;
+    private Long fromWalletFrom;
+    private Long toWalletFrom;
 
-    public WalletTransactionEventDto() {
+
+    public AuditTransactionDto() {
     }
 
-    public WalletTransactionEventDto(
-            String transactionId,
-            Long walletId,
-            String type,
-            BigDecimal amount,
-            String status,
-            LocalDateTime timestamp
-    ) {
-
+    public AuditTransactionDto(String transactionId, Long walletId, String type, BigDecimal amount, String status, LocalDateTime timestamp, Long fromWalletFrom, Long toWalletFrom) {
         this.transactionId = transactionId;
         this.walletId = walletId;
         this.type = type;
         this.amount = amount;
         this.status = status;
         this.timestamp = timestamp;
+        this.fromWalletFrom = fromWalletFrom;
+        this.toWalletFrom = toWalletFrom;
     }
 
+    // Getters and setters
     public String getTransactionId() {
         return transactionId;
     }
@@ -80,4 +77,19 @@ public class WalletTransactionEventDto {
         this.timestamp = timestamp;
     }
 
+    public Long getFromWalletFrom() {
+        return fromWalletFrom;
+    }
+
+    public void setFromWalletFrom(Long fromWalletFrom) {
+        this.fromWalletFrom = fromWalletFrom;
+    }
+
+    public Long getToWalletFrom() {
+        return toWalletFrom;
+    }
+
+    public void setToWalletFrom(Long toWalletFrom) {
+        this.toWalletFrom = toWalletFrom;
+    }
 }

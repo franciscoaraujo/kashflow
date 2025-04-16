@@ -1,6 +1,6 @@
 package br.com.bitewisebytes.service;
 
-import br.com.bitewisebytes.audit.AuditService;
+import br.com.bitewisebytes.audit.service.AuditService;
 import br.com.bitewisebytes.model.enums.TransactionStatus;
 import br.com.bitewisebytes.model.entity.Wallet;
 import br.com.bitewisebytes.model.enums.TransactionType;
@@ -57,10 +57,11 @@ public class WalletService {
 
             transactionService.createTransaction(wallet, wallet.getBalance(), TransactionType.DEPOSIT, wallet.getId(), null);
             auditService.logAudit(wallet.getId(), TransactionType.DEPOSIT, walletRequestDto.balance(), TransactionStatus.SUCCESS, null, null);
-
             log.info("Wallet created successfully: {}", walletResponseDto);
+
         }catch (Exception e){
             auditService.logAudit(wallet.getId(), TransactionType.DEPOSIT, walletRequestDto.balance(), TransactionStatus.FAILED, null, null);
+            auditService.sendAuditFallback( wallet.getId(), TransactionType.DEPOSIT, walletRequestDto.balance(), TransactionStatus.SUCCESS, null, null, new WalletException(" "," "));
             throw e;
         }
         return walletResponseDto;

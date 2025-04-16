@@ -30,8 +30,8 @@ services:
     depends_on:
       - zookeeper
     ports:
-      - "9092:9092"   # Interno (container <-> container)
-      - "9093:9093"   # Externo (IDE/local <-> container)
+      - "9092:9092"
+      - "9093:9093"  # Atenção aqui!
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: wallet_zookeeper:2181
@@ -39,28 +39,48 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LOG_RETENTION_MS: 86400000
     networks:
       - wallet-net
 
- # wallet-service:
- #   build: .
- #   container_name: wallet_app
- #  depends_on:
- #     - postgres
- #     - kafka
- #   ports:
- #     - "8080:8080"
- #   environment:
- #     SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/wallet_db
- #     SPRING_DATASOURCE_USERNAME: wallet_user
- #     SPRING_DATASOURCE_PASSWORD: wallet_pass
- #     SPRING_KAFKA_BOOTSTRAP_SERVERS: wallet_kafka:9092
- #   networks:
- #     - wallet-net
- #   restart: on-failure
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - wallet-net
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - wallet-net
+
+  wallet-service:
+    build: .
+    container_name: wallet_app
+    depends_on:
+      - postgres
+      - kafka
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://wallet_postgres:5432/wallet_db
+      SPRING_DATASOURCE_USERNAME: wallet_user
+      SPRING_DATASOURCE_PASSWORD: wallet_pass
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: wallet_kafka:9092
+    networks:
+      - wallet-net
+    restart: on-failure
 
 volumes:
   postgres_data:
 
 networks:
   wallet-net:
+    driver: bridge
