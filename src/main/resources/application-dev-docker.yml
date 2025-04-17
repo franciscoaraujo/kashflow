@@ -1,101 +1,79 @@
-version: '3.8'
-
-services:
-  postgres:
-    image: postgres:16
-    container_name: wallet_postgres
-    environment:
-      POSTGRES_DB: wallet_db
-      POSTGRES_USER: wallet_user
-      POSTGRES_PASSWORD: wallet_pass
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - wallet-net
-
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.5.1
-    container_name: wallet_zookeeper
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    networks:
-      - wallet-net
+spring:
+  datasource:
+    url: jdbc:postgresql://wallet_postgres:5432/wallet_db
+    username: wallet_user
+    password: wallet_pass
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
 
   kafka:
-    image: confluentinc/cp-kafka:7.5.1
-    container_name: wallet_kafka
-    depends_on:
-      - zookeeper
-    ports:
-      - "9092:9092"
-      - "9093:9093"
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: wallet_zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://wallet_kafka:9092,PLAINTEXT_HOST://localhost:9093
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_LOG_RETENTION_MS: 86400000
-    networks:
-      - wallet-net
+    bootstrap-servers: wallet_kafka:9092
+    consumer:
+      group-id: wallet-consumer-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      listener:
+        ack-mode: manual
 
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
-    networks:
-      - wallet-net
+resilience4j:
+  retry:
+    instances:
+      kafkaProducerRetry:
+        max-attempts: 3
+        wait-duration: 2s
 
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    networks:
-      - wallet-net
+  circuitbreaker:
+    instances:
+      kafkaCircuitBreaker:
+        sliding-window-type: COUNT_BASED  # Corrigido para COUNT_BASED
+        sliding-window-size: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
 
-  wallet-service:
-    build: .
-    container_name: wallet_app
-    depends_on:
-      - postgres
-      - kafka
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://wallet_postgres:5432/wallet_db
-      SPRING_DATASOURCE_USERNAME: wallet_user
-      SPRING_DATASOURCE_PASSWORD: wallet_pass
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: wallet_kafka:9092
-    networks:
-      - wallet-net
-    restart: on-failure
+  spring:
+    datasource:
+      url: jdbc:postgresql://wallet_postgres:5432/wallet_db
+      username: wallet_user
+      password: wallet_pass
+    jpa:
+      hibernate:
+        ddl-auto: update
+      show-sql: false
 
-volumes:
-  postgres_data:
-
-networks:
-  wallet-net:
-    driver: bridge
-
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics,prometheus
-  health:
     kafka:
-      enabled: true
+      bootstrap-servers: wallet_kafka:9092
+      consumer:
+        group-id: wallet-consumer-group
+        auto-offset-reset: earliest
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        listener:
+          ack-mode: manual
 
-logging:
-  level:
-    org.apache.kafka: DEBUG
-    org.springframework.kafka: DEBUG
+  resilience4j:
+    retry:
+      instances:
+        kafkaProducerRetry:
+          max-attempts: 3
+          wait-duration: 2s
+
+    circuitbreaker:
+      instances:
+        kafkaCircuitBreaker:
+          sliding-window-type: COUNT_BASED  # Corrigido para COUNT_BASED
+          sliding-window-size: 5
+          failure-rate-threshold: 50
+          wait-duration-in-open-state: 10s
+
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: health,info,metrics
+
+    health:
+      kafka:
+        enabled: true
