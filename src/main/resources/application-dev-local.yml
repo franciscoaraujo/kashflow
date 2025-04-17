@@ -31,18 +31,17 @@ resilience4j:
         register-health-indicator: true
         automatic-transition-from-open-to-half-open-enabled: true
 
+
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics
+        include: health,info,metrics,prometheus
   health:
     kafka:
       enabled: true
-  logging:
-    level:
-      org:
-        apache:
-          kafka: DEBUG
-        springframework:
-          kafka: DEBUG
+
+logging:
+  level:
+    org.apache.kafka: DEBUG
+    org.springframework.kafka: DEBUG
